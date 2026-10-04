@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Deepfake Scanner</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔎</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <h1>Deepfake Scanner</h1>
+    </div>
+    <div class="status" id="statusPill" data-state="idle">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="statusText">Idle</span>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <section class="viewport-panel">
+      <div class="viewport" id="viewport">
+        <video id="video" autoplay playsinline muted></video>
+        <img id="stillImage" alt="Uploaded frame" hidden />
+        <canvas id="overlay"></canvas>
+        <div class="sweep" id="sweep" aria-hidden="true"></div>
+        <p class="viewport-empty" id="viewportEmpty">
+          Start your webcam or upload an image to begin scanning.
+        </p>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <button class="btn btn-primary" id="startWebcam" type="button">Start webcam</button>
+          <button class="btn" id="stopWebcam" type="button" hidden>Stop webcam</button>
+          <label class="btn btn-secondary" for="fileInput">Upload image</label>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg" hidden />
+        </div>
+
+        <div class="control-group sliders">
+          <label class="slider-label" for="intervalSlider">
+            Scan interval
+            <span class="mono" id="intervalValue">2.0s</span>
+          </label>
+          <input type="range" id="intervalSlider" min="1" max="5" step="0.5" value="2" />
+
+          <label class="slider-label" for="thresholdSlider">
+            Flag threshold
+            <span class="mono" id="thresholdValue">50%</span>
+          </label>
+          <input type="range" id="thresholdSlider" min="10" max="95" step="5" value="50" />
+        </div>
+      </div>
+    </section>
+
+    <aside class="readout-panel">
+      <div class="readout-block">
+        <h2>Current frame</h2>
+        <div id="faceList" class="face-list">
+          <p class="muted">No frame analyzed yet.</p>
+        </div>
+      </div>
+
+      <div class="readout-block">
+        <h2>Forensic Analysis</h2>
+        <div id="forensicReasoning" class="forensic-box">
+          <p class="muted">Awaiting scan...</p>
+        </div>
+      </div>
+
+      <div class="readout-block log-block">
+        <h2>Scan log</h2>
+        <div id="log" class="log"></div>
+      </div>
+
+      <div class="readout-block key-block" id="keyWarning" hidden>
+        <h2>Setup needed</h2>
+        <p class="muted small">
+          The server isn't reporting an NVIDIA API key. Add
+          <code>NVIDIA_API_KEY</code> to a <code>.env</code> file (see
+          <code>.env.example</code>) and restart <code>npm start</code>.
+        </p>
+      </div>
+    </aside>
+
+  </main>
+
+  <footer class="foot">
+    <p>
+      Analyzed using NVIDIA NIM Vision Model (<span class="mono" id="modelPill">meta/llama-3.2-11b-vision-instruct</span>)
+      on <a href="https://build.nvidia.com" target="_blank" rel="noopener">build.nvidia.com</a>.
+      Evaluates facial consistency, synthetic generation artifacts, and forensic authenticity cues.
+    </p>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
